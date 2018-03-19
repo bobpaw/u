@@ -3,7 +3,7 @@
 PATH=/bin:/usr/bin:/usr/local/bin
 
 QUIET=
-PORT=
+PORTS=
 HOST=
 STATUS=
 PORT_OPEN=
@@ -15,7 +15,7 @@ for i in $*; do
             QUIET=true
             ;;
         -p*)
-            PORT=$(echo ${i} | sed 's/^-p\([0-9]\+\)$/\1/')
+            PORTS=$(echo ${i} | sed 's/^-p\([0-9,-]\+\)$/\1/')
             ;;
         *)
             HOST=${i}
@@ -23,7 +23,7 @@ for i in $*; do
 done
 
 if [ "${HOST}" ]; then
-    text="`nmap -oG - -p${PORT} ${HOST} | cat`"
+    text="`nmap -oG - -p${PORTS} ${HOST} | cat`"
     if echo ${text} | grep -q 'Status: Up'; then
         STATUS="Up"
     else
@@ -32,18 +32,22 @@ if [ "${HOST}" ]; then
     if [ -z "${QUIET}" ]; then
         echo "Host Status: ${STATUS}"
     fi
-    if [ "${PORT}" -a "${STATUS}" = "Up" ]; then
-        if grep "${PORT}/open" <(echo $text) > /dev/null; then
-            if [ -z "${QUIET}" ]; then
-                echo "Port ${PORT} is open."
+    if [ "${PORTS}" -a "${STATUS}" = "Up" ]; then
+        for PORT in $(echo ${PORTS}|tr ',' ' '); do
+            if grep "${PORT}/open" <(echo $text) > /dev/null; then
+                if [ -z "${QUIET}" ]; then
+                    echo "Port ${PORT} is open."
+                fi
+                if [ -z "${PORT_OPEN}" ]; then
+                    PORT_OPEN=true
+                fi
+            else
+                if [ -z "${QUIET}" ]; then
+                    echo "Port ${PORT} is closed."
+                fi
+                PORT_OPEN=false
             fi
-            PORT_OPEN=true
-        else
-            if [ -z "${QUIET}" ]; then
-                echo "Port ${PORT} is closed."
-            fi
-            PORT_OPEN=
-        fi
+        done
     else
         if [ -z "${QUIET}" ]; then
             echo "No port provided."
