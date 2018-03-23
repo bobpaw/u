@@ -24,11 +24,7 @@ int main (int argc, char * argv[]) {
     while (ABS((z*z-x)/(2*z)) > 0.0000001) {
       z -= (z*z-x)/(2*z);
     }
-    if (!imaginary) {
-      printf("Sqrt of %.*g is approximately %.6f\n", x, strlen(argv[i]), z);
-    } else {
-      printf("Sqrt of %.*g is approximately %.6fi\n", x, strlen(argv[i]), z);
-    }
+    printf("Sqrt of %.*g is approximately %.6f%c\n", x, strlen(argv[i]), z, imaginary ? 'i' : '\0');
   }
   return 0;
 }
