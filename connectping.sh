@@ -1,5 +1,11 @@
 #!/bin/bash
 
+##
+## Connect to host pinged by computer.
+## Uses ssh by default or if port is 22.
+## Otherwise runs netcat on specified port.
+##
+
 PORT=22
 ERROR=
 USER=
@@ -40,14 +46,18 @@ if [ -z "${QUIET}" ]; then
     echo "Host found: ${HOST}"
 fi
 
-if ./checkport.sh -q -p22 "${HOST}"; then
-    if [ "${USER}" ]; then
-        if [ -z "${QUIET}" ]; then
-            echo "User Given: ${USER}"
-        fi
-        ssh ${USER}@${HOST}
+if ./checkport.sh -q -p${PORT} "${HOST}"; then
+    if [ ${PORT} -ne 22 ]; then
+      nc -c '/bin/sh' ${HOST} ${PORT}
     else
-        ssh ${HOST}
+      if [ "${USER}" ]; then
+          if [ -z "${QUIET}" ]; then
+             echo "User Given: ${USER}"
+         fi
+         ssh ${USER}@${HOST}
+     else
+          ssh ${HOST}
+      fi
     fi
 else
     if [ -z "${QUIET}" ]; then

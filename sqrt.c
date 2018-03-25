@@ -2,6 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+/*
+ * Approximate square root of command line arguments to 6 digits.
+ *
+*/
+
 #define ABS(x) x < 0 ? -(x) : x
 
 int main (int argc, char * argv[]) {

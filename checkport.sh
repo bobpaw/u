@@ -1,5 +1,10 @@
 #!/bin/bash
 
+##
+## Check a single port of a host and set return value appropriately.
+## Requires nmap
+##
+
 PATH=/bin:/usr/bin:/usr/local/bin
 
 QUIET=
