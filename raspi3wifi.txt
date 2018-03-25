@@ -1,0 +1,28 @@
+Steps for enabling "real" WiFi on Raspberry Pi 3
+1.  Connect to the Internet with Ethernet or like. This is necessary because
+    you have to install more packages.
+2.  Launch a terminal or open a package manager of your choice.
+3.  If you launched a terminal be sure to become super user (root). Password
+    shouldn't be necessary; if it is, use 'sudo -s'.
+4.  Install the package 'wpagui' (other names may include 'wpa_gui'). This
+    is the GUI for wpa_supplicant (already installed) and makes
+    configuration much easier. To install it, run:
+    apt-get update && apt-get upgrade -y && apt-get install -y wpagui
+    You can now safely close the terminal.
+5.  Launch wpa_gui from the menu, or with 'Alt-F2'.
+6.  Make sure to set the interface to wlan0 and NOT p2p-dev-wlan0. Once you
+    have the WiFi working, you will need to repeat this step after every
+    reboot.
+7.  Scan for networks.
+8.  Double click any of the 'education's.
+9.  Set Authentication to WPA2-Enterprise (EAP)
+10. Set EAP method to PEAP
+11. Set Identity and Password to any AISD logon.
+12. Set Inner auth to EAP-MSCHAPV2.
+13. Click Add.
+14. Click Connect.
+15. Open a browser and open austinisd.org. (Most pages work)
+16. It should open a page saying AISD BOYD; log in with the same credentials
+    as before, remembering to check the Terms and Agreements box.
+17. Once the wpa_gui screen shows an IP Address, you can click the X (it
+    will continue running in the background).
