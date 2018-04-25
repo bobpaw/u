@@ -12,7 +12,11 @@ if [ "$(diff gitpullall.sh ${tempfile} --unchanged-line-format='' --old-line-for
   echo -n "There is a newer version available. Use it? [y/n]: "
   read answer
   if [ "${answer}" = "y" ]; then
-    eval "mv ${tempfile} $0 && exec ${tempfile}"
+    cp ${tempfile} "$(dirname $0)/gitpullall-new.sh"
+    echo "mv gitpullall-new.sh gitpullall.sh" >> gitpullall-fix.sh
+    echo "$(readlink -f /proc/$$/exe) gitpullall.sh" >> gitpullall-fix.sh
+    echo "rm -- $0" >> gipullall-fix.sh
+    exec $(readlink -f /proc/$$/exe) gitpullall-new.sh
   fi
 fi
 
