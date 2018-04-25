@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ##
-## Update all git repositories in current directory, or specified
+## Update all git repositories in current directory, or specified directories
 ##
 
 tempfile=$(mktemp "${TMPDIR:-/tmp/}tmp.$(basename $0).XXXXXXX")
@@ -12,7 +12,7 @@ if [ "$(diff gitpullall.sh ${tempfile} --unchanged-line-format='' --old-line-for
   echo -n "There is a newer version available. Use it? [y/n]: "
   read answer
   if [ "${answer}" = "y" ]; then
-    mv ${tempfile} $0 && exec $0
+    eval "mv ${tempfile} $0 && exec ${tempfile}"
   fi
 fi
 
