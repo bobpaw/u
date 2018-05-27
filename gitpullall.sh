@@ -30,7 +30,8 @@ if [ "${dont}" = "false" ]; then
         read answer
         if [ "${answer}" = "y" ]; then
             mv "$0-new" "$0"
-            exec "./$0" -n "$@"
+            chmod +x "$0-new"
+            exec "$0" -n "$@"
             exit 1
         fi
     fi
