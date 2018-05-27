@@ -35,6 +35,7 @@ if [ "${dont}" = "false" ]; then
             exit 1
         fi
     fi
+    rm -f "$0-new"
 fi
 
 for topdir in $dirs; do
