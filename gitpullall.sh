@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ##
-## Update all git repositories in current directory, or specified directories
+## Update all git repositories in current directory, or specified directorie
 ##
 
 for i in $*; do
@@ -23,16 +23,14 @@ dirs=${dirs:-.}
 dont=${dont:-false}
 
 if [ "${dont}" = "false" ]; then
-    tempfile=$(mktemp "${TMPDIR:-/tmp/}tmp.$(basename $0).XXXXXXX")
-
-    curl -L -s -o ${tempfile} https://github.com/bobpaw/u/raw/master/gitpullall.sh
-
-    diff gitpullall.sh ${tempfile} --unchanged-line-format='' --old-line-format=''
-    if [ "$(diff gitpullall.sh ${tempfile} --unchanged-line-format='' --old-line-format='')" ]; then
+    curl -L -s -o "$0-new" https://github.com/bobpaw/u/raw/pullall/gitpullall.sh
+    diff "$0" "$0-new" --unchanged-line-format='' --old-line-format=''
+    if [ "$(diff $0 $0-new --unchanged-line-format='' --old-line-format='')" ]; then
         echo -n "There is a newer version available. Use it? [y/n]: "
         read answer
         if [ "${answer}" = "y" ]; then
-            exec $(readlink -f /proc/$$/exe) gitpullall-new.sh -n
+            mv "$0-new" "$0"
+            exec "./$0" -n "$@"
             exit 1
         fi
     fi
