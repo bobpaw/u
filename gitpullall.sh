@@ -24,8 +24,8 @@ dont=${dont:-false}
 
 if [ "${dont}" = "false" ]; then
     curl -Ls -o "$0-new" https://github.com/bobpaw/u/raw/master/gitpullall.sh
-    diff "$0" "$0-new" --unchanged-line-format='' --old-line-format=''
-    if [ "$(diff $0 $0-new --unchanged-line-format='' --old-line-format='')" ]; then
+    diff <(sed 's/\\r\\n/\\n/' "$0") <(sed 's/\\r\\n/\\n/' "$0-new") --unchanged-line-format='' --old-line-format=''
+    if [ "diff <(sed 's/\\r\\n/\\n/' "$0") <(sed 's/\\r\\n/\\n/' "$0-new") --unchanged-line-format='' --old-line-format=''" ]; then
         echo -n "There is a newer version available. Use it? [y/n]: "
         read answer
         if [ "${answer}" = "y" ]; then
