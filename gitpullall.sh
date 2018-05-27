@@ -1,19 +1,19 @@
-#!/bin/sh
+#!/bin/bash
 
 ##
-## Update all git repositories in current directory, or specified directorie
+## Update all git repositories in current directory, or specified directories
 ##
 
 for i in $*; do
     case $i in
         -d*)
-            max=$(echo ${i} | cut -d'd' -f'2')
+            max="$(echo ${i} | cut -d'd' -f'2')"
             ;;
         -n)
-            dont=true
+            dont="true"
             ;;
         *)
-            dirs=${dirs} ${i}
+            dirs="${dirs} ${i}"
             ;;
     esac
 done
