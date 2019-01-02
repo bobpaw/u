@@ -57,6 +57,8 @@ exit 1
 EOF
                     exec "$0-mid"
                 fi
+            else
+                touch "$0"
             fi
             rm -f "$0-new" "${unix_self}" "${unix_new}"
         fi # use it?
