@@ -71,7 +71,7 @@ for topdir in ${dirs}; do
             if [ -d ./${i}/.git ]; then
                 echo -n "Pulling repository in folder ${i}"
                 pushd ${i} > /dev/null
-                git_output="$(git pull --all | tail -n+2)"
+                git_output="$(git pull --all |& tail -n+2)"
                 if [ "$(echo $git_output | awk 'END {print FNR}')" -eq 1 ]; then
                     echo " - ""$git_output"
                 else
