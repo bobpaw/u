@@ -60,11 +60,15 @@ print(parsed.strftime('%s'))
                 read answer
                 if [ "${answer}" = "y" ]; then
                     cat > "$0-mid" <<EOF
+#/bin/sh
 mv "$0-new" "$0"
 chmod +x "$0"
-exec "$0" $(awk '{ for (i = 0; i < NF; ++i) if (i != "-u" ) printf "%s ", $i }')
+rm \$0
+echo "Starting newer version"
+exec "$0" $(printf "%s" "$*" | sed 's/-u//g')
 exit 1
 EOF
+                    chmod +x "$0-mid"
                     exec "$0-mid"
                 fi
             else
@@ -83,20 +87,20 @@ for topdir in ${dirs}; do
                 pushd ${i} > /dev/null
                 git_outputc="$(script -q /dev/null -c 'git -c color.ui=always pull --all' | cat)"
                 git_output="$(sed 's/\x1b\[[0-9;]*[mGK]//g; s/\r$//; /done\.$/d' <<EOF | tail -n+2
-${git_outputc}
+$git_outputc
 EOF
 )"
                 if [ "$(wc -l <<EOF
-${git_output}
+$git_output
 EOF
 )" -eq 1 ]; then
-                    echo " - ${git_output}"
+                    echo " - $git_output"
                 elif [ -t 1 ]; then
                     echo
-                    echo "${git_outputc}"
+                    echo "$git_outputc"
                 else
                     echo
-                    echo "${git_output}"
+                    echo "$git_output"
                 fi
                 popd > /dev/null
             fi # git directory?
