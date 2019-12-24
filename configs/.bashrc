@@ -3,7 +3,7 @@
 # for examples
 
 export IRCSERVER=localhost
-mesg y
+[ -t 0 ] && mesg y
 
 # If not running interactively, don't do anything
 case $- in
@@ -131,6 +131,7 @@ if [ -f ~/.bash_binds ]; then
     . ~/.bash_binds
 fi
 
+tabs -2
 
 if shopt -q login_shell; then {
 # Run some startup scripts I like
@@ -148,3 +149,4 @@ if shopt -q login_shell; then {
     echo "${APT_GET_THINGS}" | mawk 'seen[$2]++ {} END {for (item in seen) print "apt-get: " item}'
   fi
 } fi
+
