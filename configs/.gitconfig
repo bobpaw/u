@@ -1,0 +1,9 @@
+# This is Git's per-user configuration file.
+[user]
+	name = Aiden Woodruff
+	email = aiden.woodruff@gmail.com
+	signingKey = Aiden
+[commit]
+	gpgSign = true
+[gui]
+	commitmsgwidth = 80

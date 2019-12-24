@@ -1,0 +1,5 @@
+sendddsig () {
+  pkill -usr1 dd
+}
+
+bind -x '"\e[15~":"sendddsig"'

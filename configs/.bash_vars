@@ -1,0 +1,4 @@
+export EMAIL="aiden.woodruff@gmail.com"
+export PRINTER=officejet
+export DEBEMAIL="${EMAIL}"
+export DEBFULLNAME="Aiden Woodruff"
