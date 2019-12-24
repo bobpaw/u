@@ -2,8 +2,11 @@
 [user]
 	name = Aiden Woodruff
 	email = aiden.woodruff@gmail.com
-	signingKey = Aiden
-[commit]
-	gpgSign = true
 [gui]
 	commitmsgwidth = 80
+[core]
+	pager = less -x1,3
+[credential]
+	helper = cache
+[alias]
+	forget-pass = credential-cache exit
