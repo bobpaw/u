@@ -143,7 +143,7 @@ if shopt -q login_shell; then {
     ~/everything.sh
   fi
 
-  if [ -x ~/apt-get-updates.sh ]; then
+  if which apt-get && [ -x ~/apt-get-updates.sh ]; then
     ~/apt-get-updates.sh
   fi
 } fi
