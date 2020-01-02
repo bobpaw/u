@@ -80,7 +80,7 @@ dup_list=""
 for i in $file_list; do
 	if [ -f "$PREFIX/$(basename $i)" ] && [ "$(diff $i $PREFIX/$(basename $i))" ]; then
 		dup_list="$dup_list $i"
-	elif [ -z "$(diff $i $PREFIX/$(basename $i))" ]; then
+	elif [ -f "$PREFIX/$(basename $i)" ] && [ -z "$(diff $i $PREFIX/$(basename $i))" ]; then
 		[ "$VERBOSE" -eq 1 ] && echo "Not replacing identical $(basename $i)"
 	else
 		install -t $PREFIX $i && { [ "$VERBOSE" -eq 1 ] && echo "Successfully installed $(basename $i)" || true; } || echo "Error installing $(basename $i)" > /dev/null >&2
