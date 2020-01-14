@@ -2,14 +2,8 @@
 
 which mawk >/dev/null && alias awk=mawk
 
-cache_date="$(stat -c '%Y' /var/cache/apt/pkgcache.bin)"
-lists_date="$(find /var/lib/apt/lists -type f -exec stat -c '%Y' '{}' \; 2>/dev/null | sort -n | tail -n1)"
 
-if [ "$lists_date" -gt "$cache_date" ]; then
-	apt_date="$lists_date"
-else
-	apt_date="$cache_date"
-fi
+apt_date="$( { find /var/lib/apt/lists -type f -exec stat -c '%Y' '{}' \; 2>/dev/null; stat -c '%Y' /var/cache/apt/pkgcache.bin /var/log/apt/history.log; } | sort -n | tail -n1)"
 
 if ! { [ -f ~/.apt-get-updates.sh-cache ] && [ "$(stat -c '%Y' ~/.apt-get-updates.sh-cache)" -gt "$apt_date" ]; } then
 	# Check if there are updates and tell me if there are
