@@ -11,7 +11,7 @@ else
 	apt_date="$cache_date"
 fi
 
-if ! { [ -f ~/.apt-get-updates.sh-cache ] && [ "$(stat -c '%Y' .apt-get-updates.sh-cache)" -gt "$apt_date" ]; } then
+if ! { [ -f ~/.apt-get-updates.sh-cache ] && [ "$(stat -c '%Y' ~/.apt-get-updates.sh-cache)" -gt "$apt_date" ]; } then
 	# Check if there are updates and tell me if there are
 	APT_GET_THINGS="$(apt-get upgrade -s | awk 'okaynow == 1 {print} /[0-9]+ upgraded/ {okaynow=1}')"
 	if [ "${APT_GET_THINGS}" ]; then
