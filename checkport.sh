@@ -45,7 +45,7 @@ if [ "${HOST}" ]; then
 		STATUS="Down"
 	fi
 	log "Host Status: ${STATUS}"
-	if [ "${PORTS}" -a "${STATUS}" = "Up" ]; then
+	if [ "${PORTS}" ] && [ "${STATUS}" = "Up" ]; then
 		for PORT in $(echo "${PORTS}" | tr ',' ' '); do
 			if echo "$text" | grep -qF "${PORT}/open"; then
 				log "Port ${PORT} is open."
@@ -66,11 +66,11 @@ else
 	ERROR=true
 fi
 
-if [ ! "${ERROR}" -a "${STATUS}" = "Up" -a "${PORT_OPEN}" ]; then
+if ! [ "${ERROR}" ] && [ "${STATUS}" = "Up" ] && [ "${PORT_OPEN}" ]; then
 	exit 0
-elif [ ! "${ERROR}" -a "${STATUS}" = "Down" ]; then
+elif ! [ "${ERROR}" ] && [ "${STATUS}" = "Down" ]; then
 	exit 1
-elif [ ! "${ERROR}" -a "${STATUS}" = "Up" -a ! "${PORT_OPEN}" ]; then
+elif ! [ "${ERROR}" ] && [ "${STATUS}" = "Up" ] && ! [ "${PORT_OPEN}" ]; then
 	exit 2
 else
 	exit 3
