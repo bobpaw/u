@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 ##
 ## Check a single port of a host and set return value appropriately.
@@ -27,44 +27,45 @@ for i in $*; do
 	esac
 done
 
+log () {
+	if [ -z "${QUIET}" ]; then
+		echo "$*"
+	fi
+}
+
 if [ "${HOST}" ]; then
-	text="`nmap -oG - -p${PORTS} ${HOST} | cat`"
-	if echo ${text} | grep -q 'Status: Up'; then
+	text="$(nmap -oG - -p${PORTS} ${HOST} | cat)"
+	if [ $? -ne 0 ]; then
+		log "nmap failed"
+		exit 4
+	fi
+	if echo "${text}" | grep -qF 'Status: Up'; then
 		STATUS="Up"
 	else
 		STATUS="Down"
 	fi
-	if [ -z "${QUIET}" ]; then
-		echo "Host Status: ${STATUS}"
-	fi
+	log "Host Status: ${STATUS}"
 	if [ "${PORTS}" -a "${STATUS}" = "Up" ]; then
-		for PORT in $(echo ${PORTS}|tr ',' ' '); do
-			if grep "${PORT}/open" <(echo $text) > /dev/null; then
-				if [ -z "${QUIET}" ]; then
-					echo "Port ${PORT} is open."
-				fi
+		for PORT in $(echo "${PORTS}" | tr ',' ' '); do
+			if echo "$text" | grep -qF "${PORT}/open"; then
+				log "Port ${PORT} is open."
 				if [ -z "${PORT_OPEN}" ]; then
 					PORT_OPEN=true
 				fi
 			else
-				if [ -z "${QUIET}" ]; then
-					echo "Port ${PORT} is closed."
-				fi
+				log "Port ${PORT} is closed."
 				PORT_OPEN=false
 			fi
 		done
 	else
-		if [ -z "${QUIET}" ]; then
-			echo "No port provided."
-		fi
+		log "No port provided."
 		ERROR=true
 	fi
 else
-	if [ -z "${QUIET}" ]; then
-		echo "No host provided."
-	fi
+	log "No host provided."
 	ERROR=true
 fi
+
 if [ ! "${ERROR}" -a "${STATUS}" = "Up" -a "${PORT_OPEN}" ]; then
 	exit 0
 elif [ ! "${ERROR}" -a "${STATUS}" = "Down" ]; then
