@@ -11,7 +11,8 @@ QUIET=0
 PORTS=
 HOST=
 STATUS=
-PORT_OPEN=
+PORT_OPEN=0
+PORT_CT = 0
 ERROR=0
 
 for i in $*; do
@@ -47,14 +48,12 @@ if [ "${HOST}" ]; then
 	log "Host Status: ${STATUS}"
 	if [ "${PORTS}" ] && [ "${STATUS}" = "Up" ]; then
 		for PORT in $(echo "${PORTS}" | tr ',' ' '); do
+			PORT_CT=$((PORT_CT + 1)) # Used below to determine the number of requested ports
 			if echo "$text" | grep -qF "${PORT}/open"; then
 				log "Port ${PORT} is open."
-				if [ -z "${PORT_OPEN}" ]; then
-					PORT_OPEN=1
-				fi
+				PORT_OPEN=$((PORT_OPEN + 1))
 			else
 				log "Port ${PORT} is closed."
-				PORT_OPEN=0
 			fi
 		done
 	else
@@ -66,7 +65,7 @@ else
 	ERROR=1
 fi
 
-if [ "${ERROR}" -ne 0 ] && [ "${STATUS}" = "Up" ] && [ "${PORT_OPEN}" -eq 1 ]; then
+if [ "${ERROR}" -ne 0 ] && [ "${STATUS}" = "Up" ] && [ "${PORT_OPEN}" -eq "${PORT_CT}" ]; then
 	exit 0
 elif [ "${ERROR}" -ne 0 ] && [ "${STATUS}" = "Down" ]; then
 	exit 1
