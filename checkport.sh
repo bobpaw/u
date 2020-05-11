@@ -5,8 +5,6 @@
 ## Requires nmap
 ##
 
-PATH=/bin:/usr/bin:/usr/local/bin
-
 QUIET=0
 PORTS=
 HOST=
