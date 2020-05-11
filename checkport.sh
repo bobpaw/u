@@ -10,7 +10,7 @@ PORTS=
 HOST=
 STATUS=
 PORT_OPEN=0
-PORT_CT = 0
+PORT_CT=0
 ERROR=0
 
 for i in $*; do
@@ -19,7 +19,7 @@ for i in $*; do
 			QUIET=true
 			;;
 		-p*)
-			PORTS=$(echo ${i} | sed 's/^-p\([0-9,-]\+\)$/\1/')
+			PORTS=${i#-p}
 			;;
 		*)
 			HOST=${i}
