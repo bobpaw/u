@@ -7,12 +7,12 @@
 
 PATH=/bin:/usr/bin:/usr/local/bin
 
-QUIET=
+QUIET=0
 PORTS=
 HOST=
 STATUS=
 PORT_OPEN=
-ERROR=
+ERROR=0
 
 for i in $*; do
 	case ${i} in
@@ -50,27 +50,27 @@ if [ "${HOST}" ]; then
 			if echo "$text" | grep -qF "${PORT}/open"; then
 				log "Port ${PORT} is open."
 				if [ -z "${PORT_OPEN}" ]; then
-					PORT_OPEN=true
+					PORT_OPEN=1
 				fi
 			else
 				log "Port ${PORT} is closed."
-				PORT_OPEN=false
+				PORT_OPEN=0
 			fi
 		done
 	else
 		log "No port provided."
-		ERROR=true
+		ERROR=1
 	fi
 else
 	log "No host provided."
-	ERROR=true
+	ERROR=1
 fi
 
-if ! [ "${ERROR}" ] && [ "${STATUS}" = "Up" ] && [ "${PORT_OPEN}" ]; then
+if [ "${ERROR}" -ne 0 ] && [ "${STATUS}" = "Up" ] && [ "${PORT_OPEN}" -eq 1 ]; then
 	exit 0
-elif ! [ "${ERROR}" ] && [ "${STATUS}" = "Down" ]; then
+elif [ "${ERROR}" -ne 0 ] && [ "${STATUS}" = "Down" ]; then
 	exit 1
-elif ! [ "${ERROR}" ] && [ "${STATUS}" = "Up" ] && ! [ "${PORT_OPEN}" ]; then
+elif [ "${ERROR}" -ne 0 ] && [ "${STATUS}" = "Up" ] && [ "${PORT_OPEN}" -eq 0 ]; then
 	exit 2
 else
 	exit 3
