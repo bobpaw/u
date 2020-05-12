@@ -3,7 +3,19 @@
 ##
 ## Check a single port of a host and set return value appropriately.
 ## Requires nmap
+## Return Values:
+## 0 Host up and all ports open
 ##
+
+unset error
+error () {
+	echo "$*" >&2
+}
+
+if ! which nmap > /dev/null; then
+	error "FATAL: nmap not found."
+	exit 2
+fi
 
 QUIET=0
 PORTS=
@@ -12,22 +24,39 @@ STATUS=
 PORT_OPEN=0
 PORT_CT=0
 ERROR=0
+USAGE_STRING="Usage: $0 [-hquv] -p PORT,... HOST"
+HELP_STRING="${USAGE_STRING}
 
-for i in $*; do
-	case ${i} in
-		-q)
-			QUIET=true
-			;;
-		-p*)
-			PORTS=${i#-p}
-			;;
-		*)
-			HOST=${i}
+-h          Display this help message.
+-p PORT,... List of ports to scan.
+-q          Quiet mode. Still logs errors.
+-u          Display usage string.
+-v          Print version information and exit."
+
+while getopts 'hp:quv' opt; do
+	case $opt in
+	h) echo "${HELP_STRING}"; exit 0 ;;
+	p) PORTS=$OPTARG ;;
+	q) QUIET=1 ;;
+	u) echo "${USAGE_STRING}"; exit 0 ;;
+	v) echo "checkport.sh 0.x Aiden Woodruff"; exit 0 ;;
+	\?) echo "${USAGE_STRING}"; exit 1 ;;
+	*) error "getopts issue"; exit 1
 	esac
 done
+shift $((OPTIND - 1))
 
+# Mostly just mirrors my other stuff. Not very useful here since I can't handle multiple hosts.
+while [ $# -gt 0 ]; do
+	case $1 in
+	*) HOST=$1
+	esac
+	shift
+done
+
+unset log
 log () {
-	if [ -z "${QUIET}" ]; then
+	if [ "${QUIET}" -eq 0 ]; then
 		echo "$*"
 	fi
 }
@@ -35,7 +64,7 @@ log () {
 if [ "${HOST}" ]; then
 	text="$(nmap -oG - -p${PORTS} ${HOST} | cat)"
 	if [ $? -ne 0 ]; then
-		log "nmap failed"
+		error "nmap failed"
 		exit 4
 	fi
 	if echo "${text}" | grep -qF 'Status: Up'; then
