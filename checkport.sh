@@ -4,7 +4,14 @@
 ## Check a single port of a host and set return value appropriately.
 ## Requires nmap
 ## Return Values:
-## 0 Host up and all ports open
+## 0 Host is up and all ports open
+## 1 Host is down
+## 2 Host is up but some ports closed
+## 3 Nmap failed
+## 4 Unknown option/getopt error
+## 5 No host provided
+## 6 No port provided
+## 7 Unknown error
 ##
 
 unset error
@@ -40,8 +47,8 @@ while getopts 'hp:quv' opt; do
 	q) QUIET=1 ;;
 	u) echo "${USAGE_STRING}"; exit 0 ;;
 	v) echo "checkport.sh 0.x Aiden Woodruff"; exit 0 ;;
-	\?) echo "${USAGE_STRING}"; exit 1 ;;
-	*) error "getopts issue"; exit 1
+	\?) echo "${USAGE_STRING}"; exit 4 ;;
+	*) error "getopts issue"; exit 4
 	esac
 done
 shift $((OPTIND - 1))
@@ -64,8 +71,8 @@ log () {
 if [ "${HOST}" ]; then
 	text="$(nmap -oG - -p${PORTS} ${HOST} | cat)"
 	if [ $? -ne 0 ]; then
-		error "nmap failed"
-		exit 4
+		error "Nmap failed"
+		exit 3
 	fi
 	if echo "${text}" | grep -qF 'Status: Up'; then
 		STATUS="Up"
@@ -85,19 +92,19 @@ if [ "${HOST}" ]; then
 		done
 	else
 		log "No port provided."
-		ERROR=1
+		ERROR=6
 	fi
 else
 	log "No host provided."
-	ERROR=1
+	ERROR=5
 fi
 
-if [ "${ERROR}" -ne 0 ] && [ "${STATUS}" = "Up" ] && [ "${PORT_OPEN}" -eq "${PORT_CT}" ]; then
+if [ "${STATUS}" = "Up" ] && [ "${PORT_OPEN}" -eq "${PORT_CT}" ]; then
 	exit 0
-elif [ "${ERROR}" -ne 0 ] && [ "${STATUS}" = "Down" ]; then
+elif [ "${STATUS}" = "Down" ]; then
 	exit 1
-elif [ "${ERROR}" -ne 0 ] && [ "${STATUS}" = "Up" ] && [ "${PORT_OPEN}" -eq 0 ]; then
+elif [ "${STATUS}" = "Up" ] && [ "${PORT_OPEN}" -ne "${PORT_CT}" ]; then
 	exit 2
 else
-	exit 3
+	exit ${ERROR}
 fi
