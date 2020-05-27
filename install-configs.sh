@@ -27,26 +27,20 @@ VERBOSE=0
 
 for opt in $*; do
 	case $opt in
-		-b)
-			BACKUPS=1
-			;;
+		-b) BACKUPS=1 ;;
 		-h)
 			echo "Full help not yet implemented"
 			exit 0
 			;;
-		-i)
-			NEXT_PREFIX=1
-			;;
-		-i* | --prefix=*)
+		-i|--prefix) NEXT_PREFIX=1 ;;
+		-i*|--prefix=*)
 			if echo "$i" | grep -q '^-i'; then
 				PREFIX="$(echo $opt | sed 's/^-i//')"
 			else
 				PREFIX="$(echo $opt | sed 's/^--prefix=//')"
 			fi
 			;;
-		-n)
-			REPLACE_ALL=-1
-			;;
+		-n) REPLACE_ALL=-1 ;;
 		-q)
 			QUIET=1
 			[ "$REPLACE_ALL" -eq 0 ] && REPLACE_ALL=-1
@@ -55,12 +49,8 @@ for opt in $*; do
 			echo "Usage: $0 [-bhnquvy] [-i PREFIX] [FOLDER]"
 			exit 0
 			;;
-		-v)
-			VERBOSE=1
-			;;
-		-y)
-			REPLACE_ALL=1
-			;;
+		-v) VERBOSE=1 ;;
+		-y) REPLACE_ALL=1 ;;
 		*)
 			if [ "$NEXT_PREFIX" -eq 1 ]; then
 				PREFIX=$opt
