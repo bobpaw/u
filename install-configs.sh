@@ -19,43 +19,46 @@
 
 BACKUPS=0
 NEXT_PREFIX=0
-PREFIX=$HOME
+PREFIX="$HOME"
 FOLDER="configs"
 REPLACE_ALL=0
 QUIET=0
 VERBOSE=0
 
-for opt in $*; do
+USAGE_STRING="Usage: $0 [-bhnquvy] [-i PREFIX] [FOLDER]"
+HELP_STRING="$USAGE_STRING
+
+Full help not yet implemented"
+
+while getopts 'bi:hnquvy' opt; do
 	case $opt in
-		-b) BACKUPS=1 ;;
-		-h)
-			echo "Full help not yet implemented"
-			exit 0
-			;;
-		-i|--prefix) NEXT_PREFIX=1 ;;
-		-i*|--prefix=*)
-			if echo "$i" | grep -q '^-i'; then
-				PREFIX="$(echo $opt | sed 's/^-i//')"
-			else
-				PREFIX="$(echo $opt | sed 's/^--prefix=//')"
-			fi
-			;;
-		-n) REPLACE_ALL=-1 ;;
-		-q)
-			QUIET=1
-			[ "$REPLACE_ALL" -eq 0 ] && REPLACE_ALL=-1
-			;;
-		-u)
-			echo "Usage: $0 [-bhnquvy] [-i PREFIX] [FOLDER]"
-			exit 0
-			;;
-		-v) VERBOSE=1 ;;
-		-y) REPLACE_ALL=1 ;;
+		b) BACKUPS=1 ;;
+		h) echo "$HELP_STRING"; exit 0 ;;
+		i) PREFIX="$OPTARG" ;;
+		n) REPLACE_ALL=-1 ;;
+		q) QUIET=1
+			[ "$REPLACE_ALL" -eq 0 ] && REPLACE_ALL=-1 ;;
+		u) echo "$USAGE_STRING"; exit 0 ;;
+		v) VERBOSE=1 ;;
+		y) REPLACE_ALL=1 ;;
+		\?) echo "$HELP_STRING"; exit 1 ;;
+		*) echo "getopts error"; exit 1
+	esac
+done
+
+shift $((OPTIND - 1))
+
+while [ $# -gt 0 ]; do
+	case $1 in
+		--prefix) NEXT_PREFIX=1 ;;
+		--prefix=) PREFIX="${1#--prefix=}"
 		*)
-			if [ "$NEXT_PREFIX" -eq 1 ]; then
-				PREFIX=$opt
+			if [ $NEXT_PREFIX -eq 1 ]; then
+				PREFIX="$1"
+				NEXT_PREFIX=0
+			else
+				FOLDER="$1"
 			fi
-			;;
 	esac
 done
 
