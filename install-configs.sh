@@ -51,7 +51,7 @@ shift $((OPTIND - 1))
 while [ $# -gt 0 ]; do
 	case $1 in
 		--prefix) NEXT_PREFIX=1 ;;
-		--prefix=) PREFIX="${1#--prefix=}"
+		--prefix=) PREFIX="${1#--prefix=}" ;;
 		*)
 			if [ $NEXT_PREFIX -eq 1 ]; then
 				PREFIX="$1"
