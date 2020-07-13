@@ -2,10 +2,8 @@ cmake_minimum_required(VERSION 3.8) # Allows use of compile_features requesting 
 project(PROJECT_NAME #[[FIXME: Your project's name]] VERSION 0.0 LANGUAGES C CXX)
 
 ##
-## Conventions:
-## HAVE_FOO: if foo is a symbol that exists
-## FOO_FOUND: if foo is a library/header that exists
-##
+## HAVE is for symbols and headers
+## FOUND is for packages
 ##
 
 # Give some default build types to use
@@ -26,8 +24,11 @@ endif()
 
 include(CheckIncludeFileCXX)
 include(CheckIncludeFile)
-include(CheckSymbolExists)
-include(CheckCXXSymbolExists)
+
+#[[ Only include if you need fixed-width integers
+include(CheckTypeSize)
+include(CMakePushCheckState)
+]]#
 
 # Put any cache options here
 
@@ -43,9 +44,17 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 find_library(MATH_FOUND m)
 
+#[[ I don't always need fixed width integers, but a common problem should have an easily accessible solution.
+Just uncomment to get what you need.
 # Technically these types are optional so we should check and use fast or least
-check_cxx_symbol_exists(std::int8_t cstdint HAVE_INT8_T)
-check_cxx_symbol_exists(std::uint8_t cstdint HAVE_UINT8_T)
+cmake_push_check_state(RESET)
+set(CMAKE_EXTRA_INCLUDE_FILES cstdint)
+
+# CheckTypeSize is the correct way to check if types exist
+check_type_size(std::int8_t SIZEOF_INT8_T LANGUAGE CXX)
+check_type_size(std::uint8_t SIZEOF_UINT8_T LANGUAGE CXX)
+cmake_pop_check_state()
+]]#
 
 if ($<VERSION_GREATER_EQUAL:"${CMAKE_VERSION}","3.12">)
 	add_compile_definitions(HAVE_CMAKE_CONFIG_H)
