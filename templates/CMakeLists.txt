@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.8) # Allows use of compile_features requesting certain C++ standard levels
+cmake_minimum_required(VERSION 3.8) # First version with CMP0067
 project(PROJECT_NAME #[[FIXME: Your project's name]] VERSION 0.0 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
@@ -19,6 +19,9 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 	set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS
 		"Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 endif()
+
+# This expects you to have modules. Uncomment if you do
+# list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 # CTest if this is the top-level project
 if (CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
