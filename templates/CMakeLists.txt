@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.8) # Allows use of compile_features requesting certain C++ standard levels
 project(PROJECT_NAME #[[FIXME: Your project's name]] VERSION 0.0 LANGUAGES C CXX)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED YES)
+cmake_policy(set CMP0067 NEW) # Force CMake to observe CXX_STANDARD in checks
 
 ##
 ## HAVE is for symbols and headers
