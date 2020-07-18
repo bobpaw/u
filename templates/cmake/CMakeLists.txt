@@ -36,6 +36,10 @@ include(CheckTypeSize)
 include(CMakePushCheckState)
 ]]#
 
+if ($<COMPILE_FEATURES:cxx_noexcept>)
+	set(HAVE_NOEXCEPT YES)
+endif()
+
 # Put any cache options here
 
 
