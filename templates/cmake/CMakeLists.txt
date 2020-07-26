@@ -55,14 +55,14 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 find_library(MATH_FOUND m)
 
 #[[ I don't always need fixed width integers, but a common problem should have an easily accessible solution.
-Just uncomment to get what you need.
+# Just uncomment to get what you need.
 # Technically these types are optional so we should check and use fast or least
 cmake_push_check_state(RESET)
 set(CMAKE_EXTRA_INCLUDE_FILES cstdint)
 
 # CheckTypeSize is the correct way to check if types exist
-check_type_size(std::int8_t SIZEOF_INT8_T LANGUAGE CXX)
-check_type_size(std::uint8_t SIZEOF_UINT8_T LANGUAGE CXX)
+check_type_size(std::int32_t SIZEOF_INT32_T LANGUAGE CXX)
+check_type_size(std::uint32_t SIZEOF_UINT32_T LANGUAGE CXX)
 cmake_pop_check_state()
 ]]#
 
@@ -84,6 +84,6 @@ add_subdirectory(src)
 
 
 # Only enable testing if this is the top-level project or it's a test build
-if ((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR PROJECT_BUILD_TESTING #[[FIXME: Your project's shortname]]) AND BUILD_TESTING)
+if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/test/" AND (CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR PROJECT_BUILD_TESTING #[[FIXME: Your project's shortname]]) AND BUILD_TESTING)
 	add_subdirectory(test)
 endif()
