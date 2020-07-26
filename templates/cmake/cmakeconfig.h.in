@@ -16,7 +16,7 @@
 
 #cmakedefine HAVE_SIZEOF_INT32_T
 
-#if defined(HAVE_SIZEOF_INT32_t)
+#if defined(HAVE_SIZEOF_INT32_T)
 @SIZEOF_INT32_T_CODE@
 
 // Technically the standard only requires int_fast32_t. We'll just prefer speed (over size).
