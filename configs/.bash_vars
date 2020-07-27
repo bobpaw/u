@@ -1,4 +1,9 @@
 export EMAIL="aiden.woodruff@gmail.com"
-export PRINTER=officejet
 export DEBEMAIL="${EMAIL}"
 export DEBFULLNAME="Aiden Woodruff"
+
+export GPG_TTY=$(tty)
+
+if [ "$WSL_DISTRO_NAME" ]; then
+export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk 'NR == 1 {print $2}'):0.0
+fi
