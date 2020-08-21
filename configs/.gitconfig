@@ -7,6 +7,12 @@
 [core]
 	pager = less -x1,3
 [credential]
-	helper = cache
+	helper = store
 [alias]
 	forget-pass = credential-cache exit
+[push]
+	followTags = true
+[commit]
+	gpgSign = true
+[tag]
+	gpgSign = true
