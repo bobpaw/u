@@ -1,3 +1,9 @@
 function debchangelog () {
   zless "/usr/share/doc/$1/changelog.Debian.gz"
 }
+
+if [ -d .bash_funcs.d ]; then
+	for i in $(find .bash_funcs.d -type f); do
+		. $i
+	done
+fi
