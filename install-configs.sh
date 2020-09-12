@@ -10,6 +10,7 @@
 ## -i PREFIX Set prefix to install files into (default: ~)
 ## --prefix=PREFIX
 ## -h Display help
+## -m PATH Set mergetool
 ## -n Never replace destination files
 ## -q Quiet mode (Implies -n unless -y is specified)
 ## -u Display usage
@@ -24,17 +25,19 @@ FOLDER="configs"
 REPLACE_ALL=0
 QUIET=0
 VERBOSE=0
+MERGETOOL=
 
-USAGE_STRING="Usage: $0 [-bhnquvy] [-i PREFIX] [FOLDER]"
+USAGE_STRING="Usage: $0 [-bhnquvy] [-i PREFIX] [-m PATH] [FOLDER]"
 HELP_STRING="$USAGE_STRING
 
 Full help not yet implemented"
 
-while getopts 'bi:hnquvy' opt; do
+while getopts 'bi:hm:nquvy' opt; do
 	case $opt in
 		b) BACKUPS=1 ;;
 		h) echo "$HELP_STRING"; exit 0 ;;
 		i) PREFIX="$OPTARG" ;;
+		m) MERGETOOL="$OPTARG" ;;
 		n) REPLACE_ALL=-1 ;;
 		q) QUIET=1
 			[ "$REPLACE_ALL" -eq 0 ] && REPLACE_ALL=-1 ;;
@@ -66,6 +69,16 @@ if [ "$BACKUPS" -eq 0 ]; then
 	file_list="$(find $FOLDER -type f ! -name 'README*' ! -name '*~')"
 else
 	file_list="$(find $FOLDER -type f ! -name README*)"
+fi
+
+if [ -z "$MERGETOOL" ]; then
+	if [ "$(git config --get merge.tool)" ]; then
+		MERGETOOL="$(git config --get merge.tool)"
+	elif which vimdiff > /dev/null; then
+		MERGETOOL=vimdiff
+	else
+		MERGETOOL=editor
+	fi
 fi
 
 dup_list=""
@@ -117,14 +130,6 @@ for i in $dup_list; do
 					git diff --color --no-index "$PREFIX/$(basename "$i")" "$i" | less -R
 					;;
 				e)
-					MERGETOOL=
-					if [ "$(git config --get merge.tool)" ]; then
-						MERGETOOL="$(git config --get merge.tool)"
-					elif which vimdiff > /dev/null; then
-						MERGETOOL=vimdiff
-					else
-						MERGETOOL=editor
-					fi
 					echo "Opening both files with $MERGETOOL"
 					$MERGETOOL "$PREFIX/$(basename "$i")" "$i"
 					;;
