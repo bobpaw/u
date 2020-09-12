@@ -92,7 +92,7 @@ for i in $dup_list; do
 			echo "older."
 		fi
 		until [ "$case_success" -eq 1 ]; do
-			read -p "Replace it? [(y)es/(n)o/(d)iff/(a)ll/ne(v)er]: " response
+			read -p "Replace it? [(y)es/(n)o/(d)iff/(e)dit/(a)ll/ne(v)er]: " response
 			case $response in
 				y)
 					install -t $PREFIX $i && { [ "$VERBOSE" -eq 1 ] && echo "Successfully installed $(basename $i)" || true; } || echo "Error installing $(basename $i)" > /dev/null >&2
@@ -113,7 +113,20 @@ for i in $dup_list; do
 					case_success=1
 					;;
 				d)
-					echo "Not yet implemented"
+					# echo "Not yet implemented"
+					git diff --color --no-index "$PREFIX/$(basename "$i")" "$i" | less -R
+					;;
+				e)
+					MERGETOOL=
+					if [ "$(git config --get merge.tool)" ]; then
+						MERGETOOL="$(git config --get merge.tool)"
+					elif which vimdiff > /dev/null; then
+						MERGETOOL=vimdiff
+					else
+						MERGETOOL=editor
+					fi
+					echo "Opening both files with $MERGETOOL"
+					$MERGETOOL "$PREFIX/$(basename "$i")" "$i"
 					;;
 				*)
 					;;
