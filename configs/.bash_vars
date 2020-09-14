@@ -4,6 +4,8 @@ export DEBFULLNAME="Aiden Woodruff"
 
 export GPG_TTY=$(tty)
 
+# Alternative for testing if we are a WSL:
+# grep -q 'microsoft' /proc/version
 if [ "$WSL_DISTRO_NAME" ] && ! [ "$SSH_CLIENT" ] && ! [ "$SSH_TTY" ]; then
 	export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk 'NR == 1 {print $2}'):0.0
 fi
