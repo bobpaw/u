@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8) # First version with CMP0067
-project(PROJECT_NAME #[[FIXME: Your project's name]] VERSION 0.0 LANGUAGES C CXX)
+project(#[[FIXME: Your project's name]] VERSION 0.0 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
 cmake_policy(SET CMP0067 NEW) # Force CMake to observe CXX_STANDARD in checks
@@ -84,6 +84,6 @@ add_subdirectory(src)
 
 
 # Only enable testing if this is the top-level project or it's a test build
-if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/test/" AND (CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR PROJECT_BUILD_TESTING #[[FIXME: Your project's shortname]]) AND BUILD_TESTING)
+if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/test/" AND (CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR #[[FIXME: Your project's shortname]]_BUILD_TESTING) AND BUILD_TESTING)
 	add_subdirectory(test)
 endif()
