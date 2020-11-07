@@ -28,8 +28,10 @@ if (CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 	include(CTest)
 endif()
 
+include(FetchContent)
 include(CheckIncludeFileCXX)
 include(CheckIncludeFile)
+include(CheckCXXSymbolExists)
 
 # Fetch PDCurses
 FetchContent_DECLARE(
