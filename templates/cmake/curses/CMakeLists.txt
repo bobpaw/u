@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.8) # First version with CMP0067
+cmake_minimum_required(VERSION 3.11) # FetchContent
 project(#[[FIXME: Your project's name]] VERSION 0.0 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
@@ -31,10 +31,19 @@ endif()
 include(CheckIncludeFileCXX)
 include(CheckIncludeFile)
 
-#[[ Only include if you need fixed-width integers
-include(CheckTypeSize)
-include(CMakePushCheckState)
-]]#
+# Fetch PDCurses
+FetchContent_DECLARE(
+	PDCurses
+	GIT_REPOSITORY https://github.com/bobpaw/FindPDCurses.git
+	GIT_TAG v1.0
+	GIT_SHALLOW true
+)
+
+FetchContent_GetProperties(PDCurses)
+if(NOT PDCurses_POPULATED)
+  FetchContent_Populate(PDCurses)
+  list(APPEND CMAKE_MODULE_PATH ${NAME}_SOURCE_DIR})
+endif()
 
 if ($<COMPILE_FEATURES:cxx_noexcept>)
 	set(HAVE_NOEXCEPT YES)
@@ -53,18 +62,6 @@ endif()
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 find_library(MATH_FOUND m)
-
-#[[ I don't always need fixed width integers, but a common problem should have an easily accessible solution.
-# Just uncomment to get what you need.
-# Technically these types are optional so we should check and use fast or least
-cmake_push_check_state(RESET)
-set(CMAKE_EXTRA_INCLUDE_FILES cstdint)
-
-# CheckTypeSize is the correct way to check if types exist
-check_type_size(std::int32_t SIZEOF_INT32_T LANGUAGE CXX)
-check_type_size(std::uint32_t SIZEOF_UINT32_T LANGUAGE CXX)
-cmake_pop_check_state()
-]]#
 
 if ($<VERSION_GREATER_EQUAL:"${CMAKE_VERSION}","3.12">)
 	add_compile_definitions(HAVE_CMAKE_CONFIG_H)
