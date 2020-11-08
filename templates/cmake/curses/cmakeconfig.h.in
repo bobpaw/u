@@ -1,0 +1,27 @@
+#cmakedefine PROJECT_NAME "@PROJECT_NAME@"
+
+#cmakedefine PROJECT_VERSION "@PROJECT_VERSION@"
+#cmakedefine PROJECT_VERSION_MAJOR "@PROJECT_VERSION_MAJOR@"
+#cmakedefine PROJECT_VERSION_MINOR "@PROJECT_VERSION_MINOR@"
+
+#cmakedefine MATH_FOUND
+
+#cmakedefine HAVE_NOEXCEPT
+
+#if defined(HAVE_NOEXCEPT) || __cplusplus >= 201003L
+#define my_noexcept noexcept
+#else
+#define my_noexcept throw()
+#endif
+
+#cmakedefine HAVE_SIZEOF_INT32_T
+
+#if defined(HAVE_SIZEOF_INT32_T)
+@SIZEOF_INT32_T_CODE@
+
+// Technically the standard only requires int_fast32_t. We'll just prefer speed (over size).
+#if !(defined(HAVE_SIZEOF_INT32_T) && SIZEOF_INT32_T == 4)
+#define int32_t int_fast32_t
+#endif
+#endif
+
